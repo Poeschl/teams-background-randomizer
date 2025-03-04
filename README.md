@@ -1,4 +1,4 @@
-# random-teams-bg
+# Teams background randomizer
 Select a random background image for Microsoft Teams. If you use the daily job, it will give you a new file every day to use as your background. If you manually put a file using the upload button in the Teams UI, it will leave those in place. The idea is you want to only have a few background images to select from to make it easy on you.
 
 You will need to source your own background images and place them in the src_dir (see below). The script will then place a hard link to one of the files in your src_dir. Every time you run the script, it will destroy and recreate the hard link.
