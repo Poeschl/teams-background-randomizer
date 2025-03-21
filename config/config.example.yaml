@@ -1,0 +1,19 @@
+# Set this to your directory with background images. Per default your default os image folder will be used.
+#image_source_dir: ~/Pictures/TeamsBackgrounds
+# This is the directory where the images will be copied to. It is the folder where MS Teams will store the uploaded backgrounds.
+# If it's not defined, the application will attempt to detect and set it
+#msteams_upload_dir: .../MSTeams/Backgrounds/Uploads
+overlay:
+  # Should there be an overlay on the background image?
+  enabled: false
+  logo_file: /Users/me/Pictures/Overlay.png
+  # If you have a light variant logo, you can specify it here.
+  #logo_file_light: /Users/me/Pictures/Overlay.png
+  # The offset of the logo in percentage of background image width/height from the top left corner
+  offset:
+    x: 0.01
+    y: 0.01
+  # The size of the logo in percentage of the background image height.
+  size:
+    width: 0.2
+    height: 0.2

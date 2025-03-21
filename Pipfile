@@ -7,6 +7,8 @@ name = "pypi"
 pillow = "*"
 pickledb = "*"
 argparse = "*"
+pyyaml = "*"
+platformdirs = "*"
 
 [dev-packages]
 

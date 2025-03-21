@@ -133,3 +133,6 @@ dmypy.json
 
 # Jetbrains IDEs
 .idea
+
+config/config.yaml
+config/config.yml
