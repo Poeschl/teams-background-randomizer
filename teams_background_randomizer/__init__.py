@@ -8,6 +8,7 @@ from file_helper import get_new_background_path, copy_image_to_temp_dir, get_ima
   replace_image_with_new_link, \
   clean_team_upload_folder, get_overlay_image_path
 from image_helper import get_absolute_area_of_overlay, background_in_area_is_dark, paint_overlay_on_background
+from teams_background_randomizer.image_helper import scale_image_to_720p
 
 
 def main(config_file: str):
@@ -19,6 +20,7 @@ def main(config_file: str):
 
   # Create copy in cache dir to avoid locking the original file
   new_background = copy_image_to_temp_dir(config, new_background)
+  new_background = scale_image_to_720p(new_background)
 
   # overlay a logo if configured to do so, also resizes background to configured size
   if config['overlay']['enabled']:

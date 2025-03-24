@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 
 from PIL import Image
+from PIL.Image import Resampling
 
 # The percentage of pixels which must be dark to classify a image as dark.
 IMAGE_LIGHT_DARK_THRESHOLD_PERCENTAGE = .3
@@ -23,6 +24,19 @@ def background_in_area_is_dark(image: Path, area: tuple[float, float, float, flo
 
   ratio = dark_count / (image_area.width * image_area.height)
   return ratio > IMAGE_LIGHT_DARK_THRESHOLD_PERCENTAGE
+
+
+def scale_image_to_720p(image_path: Path) -> Path:
+  with Image.open(image_path) as img:
+    width, height = img.size
+    if height > 720:
+      new_width = int((720 / height) * width)
+      img = img.resize((new_width, 720), Resampling.LANCZOS)
+      save_path = image_path.parent / f"{image_path.stem}-scaled{image_path.suffix}"
+      img.save(save_path)
+      return save_path
+    else:
+      return image_path
 
 
 def get_absolute_area_of_overlay(config: dict, background_image_path: Path) -> tuple[float, float, float, float]:
