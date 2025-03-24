@@ -20,15 +20,11 @@ After that the script can be executed from the project dir with:
 pipenv run randomizer
 ```
 
-To execute the script from anywhere on your host, use the script which sets the project environment right:
+To execute the script from anywhere on your host, use the provided script in the `scripts` folder.
+Note: Please adjust the path to `pipenv` on your host.
 
 ```bash
-# Switch to the
-cd ~/Workspace/teams-background-randomizer
-pipenv run randomizer
-
-# Or as one-liner
-cd ~/Workspace/teams-background-randomizer/scripts/runRandomizer.sh
+~/Workspace/teams-background-randomizer/scripts/runRandomizer.sh
 ```
 
 ## Run it on a regular interval
