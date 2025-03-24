@@ -3,11 +3,11 @@ import logging
 import sys
 from pathlib import Path
 
-from random_teams_bg.config_helper import read_config
-from random_teams_bg.file_helper import get_new_background_path, copy_image_to_temp_dir, get_image_to_replace, \
+from config_helper import read_config
+from file_helper import get_new_background_path, copy_image_to_temp_dir, get_image_to_replace, \
   replace_image_with_new_link, \
   clean_team_upload_folder, get_overlay_image_path
-from random_teams_bg.image_helper import get_absolute_area_of_overlay, background_in_area_is_dark, paint_overlay_on_background
+from image_helper import get_absolute_area_of_overlay, background_in_area_is_dark, paint_overlay_on_background
 
 
 def main(config_file: str):

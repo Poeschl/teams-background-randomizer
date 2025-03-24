@@ -74,8 +74,9 @@ def replace_image_with_new_link(to_be_replaced: Path, new_image: Path):
   logging.info(f"Created hard link to {new_image.name} in {str(to_be_replaced)}")
 
 
-def get_new_background_path(config: dict):
+def get_new_background_path(config: dict) -> Path:
   history_file = Path(config['config_dir'], history_data_file)
+  logging.info(f"Reading history from {history_file}")
 
   if history_file.exists():
     with open(history_file, 'r') as infile:
@@ -83,9 +84,16 @@ def get_new_background_path(config: dict):
   else:
     background_history = {}
 
+  logging.info(f"Search for backgrounds in '{config['image_source_dir']}'")
+
   possible_backgrounds = list(Path(config['image_source_dir']).glob('**/*.png'))
   possible_backgrounds += list(Path(config['image_source_dir']).glob('**/*.jpeg'))
   possible_backgrounds += list(Path(config['image_source_dir']).glob('**/*.jpg'))
+
+  logging.info(f"Found {len(possible_backgrounds)} background images")
+
+  if len(possible_backgrounds) == 0:
+    raise FileNotFoundError("No possible background images found")
 
   # Build up counts for existing files
   counts = {}
