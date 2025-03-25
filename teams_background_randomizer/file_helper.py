@@ -3,7 +3,7 @@ import os
 import shutil
 from os import lstat
 from pathlib import Path
-from random import choices
+from random import choices, shuffle
 from typing import Optional
 
 import yaml
@@ -95,6 +95,9 @@ def get_new_background_path(config: dict) -> Path:
   if len(possible_backgrounds) == 0:
     raise FileNotFoundError("No possible background images found")
 
+  # Shuffle list for increased randomness
+  shuffle(possible_backgrounds)
+
   # Build up counts for existing files
   counts = {}
   possible_background: Path
@@ -107,7 +110,7 @@ def get_new_background_path(config: dict) -> Path:
   max_count = max(counts.values())
   weights = [(max_count - w) + 1 for w in counts.values()]
 
-  new_background = choices(possible_backgrounds, weights, k=1)[0]
+  new_background = choices(possible_backgrounds, cum_weights=weights)[0]
 
   counts[new_background.stem] += 1
 
