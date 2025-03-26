@@ -19,6 +19,10 @@ def clean_team_upload_folder(config: dict, keep_file: Path):
       file.unlink()
 
 
+def get_ms_teams_thumbnail(full_image: Path) -> Path:
+  return Path(full_image.parent, f"{full_image.stem}_thumb{full_image.suffix}")
+
+
 def get_image_to_replace(config: dict) -> Path:
   upload_folder: Path = Path(config['msteams_upload_dir'])
   linked_image: Optional[Path] = None
@@ -29,7 +33,7 @@ def get_image_to_replace(config: dict) -> Path:
   files = [file for file in files if file.name != ".DS_Store" and "_thumb" not in file.name]
 
   if len(files) > 0:
-    for file in upload_folder.iterdir():
+    for file in files:
       if _is_hard_link(file):
         logging.info("Found image hard link: " + str(file))
         linked_image = file
