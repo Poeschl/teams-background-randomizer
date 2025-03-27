@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -37,10 +38,16 @@ def read_config(config_file: Path) -> dict:
   if len(config["config_dir"]) < 1:
     config["config_dir"] = platformdirs.user_data_dir("teams-background-randomizer")
 
-    if len(config["temp_dir"]) < 1:
-      config["temp_dir"] = platformdirs.user_cache_dir("teams-background-randomizer")
+  if len(config["temp_dir"]) < 1:
+    config["temp_dir"] = platformdirs.user_cache_dir("teams-background-randomizer")
 
-  #TODO: Auto-detect ms teams upload dir
+  if len(config["msteams_upload_dir"]) < 1:
+    if sys.platform == "darwin":
+      config["msteams_upload_dir"] = \
+        f"{platformdirs.user_data_dir()}/Containers/com.microsoft.teams2/Data/Library/Application Support/Microsoft/MSTeams/Backgrounds/Uploads"
+    # Todo: Add more default paths for other platforms
+    else:
+      raise NotImplementedError("No default upload path for this OS. Please specify one in the config file.")
 
   return config
 
