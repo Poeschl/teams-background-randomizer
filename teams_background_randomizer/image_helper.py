@@ -1,30 +1,82 @@
 import logging
+import statistics
 from pathlib import Path
+from typing import Tuple
 
-from PIL import Image
+from PIL import Image, ImageStat
 from PIL.Image import Resampling
 
-# The percentage of pixels which must be dark to classify a image as dark.
-IMAGE_LIGHT_DARK_THRESHOLD_PERCENTAGE = .3
-IMAGE_DARK_THRESHOLD = 128  # 0-255 scale, 0 is black, 255 is white
 
+def analyze_background_area(image: Path, area: tuple[float, float, float, float]) -> dict:
+  """
+  Advanced analysis of a background area to determine if it should have dark or light overlay.
 
-def background_in_area_is_dark(image: Path, area: tuple[float, float, float, float]) -> bool:
+  Returns a dictionary with analysis results including:
+  - is_dark: Boolean indicating if the area is generally dark
+  - mean_brightness: Average brightness value (0-255)
+  - contrast: Measure of contrast within the area
+  - histogram_analysis: Results from histogram analysis
+  """
   with Image.open(image).convert("L") as img:
     image_area = img.crop(area)
-    pixels = image_area.load()
-    img.close()
 
-  # Count the dark and light pixels
-  dark_count = 0
-  for x in range(image_area.width):
-    for y in range(image_area.height):
-      pixel = pixels[x, y]
-      if pixel < IMAGE_DARK_THRESHOLD:
-        dark_count += 1
+    # Calculate statistics
+    stats = ImageStat.Stat(image_area)
+    mean_brightness = stats.mean[0]
 
-  ratio = dark_count / (image_area.width * image_area.height)
-  return ratio > IMAGE_LIGHT_DARK_THRESHOLD_PERCENTAGE
+    # Calculate contrast (standard deviation of brightness)
+    contrast = stats.stddev[0]
+
+    # Get histogram for more detailed analysis
+    histogram = image_area.histogram()
+
+    # Analyze histogram to find dominant brightness ranges
+    dark_range_percentage = sum(histogram[:85]) / sum(histogram)  # Very dark pixels
+    mid_range_percentage = sum(histogram[85:170]) / sum(histogram)  # Mid-range pixels
+    light_range_percentage = sum(histogram[170:]) / sum(histogram)  # Light pixels
+
+    # For high contrast images, we need to be more careful
+    is_high_contrast = contrast > 60
+
+    # Make final determination with multiple factors
+    is_dark_mean = mean_brightness < 128
+
+    # For logos, we want to consider dominant color ranges more heavily
+    # If more than 40% of pixels are dark, or if dark+mid pixels are more than 65%, consider it dark
+    is_dark_histogram = dark_range_percentage > 0.4 or (dark_range_percentage + mid_range_percentage > 0.65)
+
+    # For high contrast images, we lean more on the mean brightness
+    # For low contrast images, we trust the histogram analysis more
+    if is_high_contrast:
+      is_dark = is_dark_mean
+    else:
+      # For more uniform brightness (logos), use a combination with more weight on histogram
+      is_dark = is_dark_histogram if dark_range_percentage > 0.35 else is_dark_mean
+
+    return {
+        "is_dark": is_dark,
+        "mean_brightness": mean_brightness,
+        "contrast": contrast,
+        "histogram_analysis": {
+            "dark_percentage": dark_range_percentage,
+            "mid_percentage": mid_range_percentage,
+            "light_percentage": light_range_percentage
+        },
+        "is_high_contrast": is_high_contrast
+    }
+
+
+def should_use_dark_overlay(image: Path, area: tuple[float, float, float, float]) -> bool:
+  """
+  Determine if a dark overlay should be used for better readability.
+
+  Returns True if a dark overlay should be used, False if a light overlay is better.
+  """
+  analysis = analyze_background_area(image, area)
+
+  # If the area is dark, use a light overlay (return False)
+  # If the area is light, use a dark overlay (return True)
+  return not analysis["is_dark"]
 
 
 def scale_image_to_720p(image_path: Path) -> Path:
