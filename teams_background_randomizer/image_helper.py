@@ -6,6 +6,7 @@ from PIL.Image import Resampling
 
 # The percentage of pixels which must be dark to classify a image as dark.
 IMAGE_LIGHT_DARK_THRESHOLD_PERCENTAGE = .3
+IMAGE_DARK_THRESHOLD = 128  # 0-255 scale, 0 is black, 255 is white
 
 
 def background_in_area_is_dark(image: Path, area: tuple[float, float, float, float]) -> bool:
@@ -19,7 +20,7 @@ def background_in_area_is_dark(image: Path, area: tuple[float, float, float, flo
   for x in range(image_area.width):
     for y in range(image_area.height):
       pixel = pixels[x, y]
-      if pixel < 128:
+      if pixel < IMAGE_DARK_THRESHOLD:
         dark_count += 1
 
   ratio = dark_count / (image_area.width * image_area.height)
