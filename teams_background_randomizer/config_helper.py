@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict
 
 import platformdirs
 from yaml import safe_load, YAMLError
