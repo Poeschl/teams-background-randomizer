@@ -1,7 +1,5 @@
 import logging
-import statistics
 from pathlib import Path
-from typing import Tuple
 
 from PIL import Image, ImageStat
 from PIL.Image import Resampling
