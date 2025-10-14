@@ -8,8 +8,7 @@ from file_helper import get_new_background_path, copy_image_to_temp_dir, get_ima
   replace_image_with_new_link, get_ms_teams_thumbnail, \
   clean_team_upload_folder, get_overlay_image_path
 from image_helper import get_absolute_area_of_overlay, paint_overlay_on_background, \
-  scale_image_to_720p
-from teams_background_randomizer.image_helper import should_use_dark_overlay
+  scale_image_to_720p, should_use_dark_overlay
 
 
 def main(config_file: str):
