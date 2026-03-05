@@ -112,9 +112,12 @@ def get_new_background_path(config: dict) -> Path:
       counts[possible_background.stem] = 0
 
   max_count = max(counts.values())
-  weights = [(max_count - w) + 1 for w in counts.values()]
 
-  new_background = choices(possible_backgrounds, cum_weights=weights)[0]
+  # Exponential weighting: images with low count get much higher weight
+  # e.g. count=0 -> weight=2^max, count=max -> weight=1
+  weights = [2**(max_count - w) for w in counts.values()]
+
+  new_background = choices(possible_backgrounds, weights=weights)[0]
 
   counts[new_background.stem] += 1
 
