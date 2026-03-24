@@ -39,17 +39,10 @@ def analyze_background_area(image: Path, area: tuple[float, float, float, float]
     # Make final determination with multiple factors
     is_dark_mean = mean_brightness < 128
 
-    # For logos, we want to consider dominant color ranges more heavily
-    # If more than 40% of pixels are dark, or if dark+mid pixels are more than 65%, consider it dark
-    is_dark_histogram = dark_range_percentage > 0.4 or (dark_range_percentage + mid_range_percentage > 0.65)
+    # Consider dark only if truly dominated by dark/mid pixels AND not enough bright pixels present
+    is_dark_histogram = ((dark_range_percentage > 0.4 or dark_range_percentage + mid_range_percentage > 0.65) and light_range_percentage < 0.30)
 
-    # For high contrast images, we lean more on the mean brightness
-    # For low contrast images, we trust the histogram analysis more
-    if is_high_contrast:
-      is_dark = is_dark_mean
-    else:
-      # For more uniform brightness (logos), use a combination with more weight on histogram
-      is_dark = is_dark_histogram if dark_range_percentage > 0.35 else is_dark_mean
+    is_dark = is_dark_histogram if dark_range_percentage > 0.35 else is_dark_mean
 
     return {
         "is_dark": is_dark,
