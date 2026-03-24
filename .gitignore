@@ -136,3 +136,5 @@ dmypy.json
 
 config/config.yaml
 config/config.yml
+
+.DS_Store
