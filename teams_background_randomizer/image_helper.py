@@ -40,7 +40,7 @@ def analyze_background_area(image: Path, area: tuple[float, float, float, float]
     is_dark_mean = mean_brightness < 128
 
     # Consider dark only if truly dominated by dark/mid pixels AND not enough bright pixels present
-    is_dark_histogram = ((dark_range_percentage > 0.4 or dark_range_percentage + mid_range_percentage > 0.65) and light_range_percentage < 0.30)
+    is_dark_histogram = ((dark_range_percentage > 0.4 or dark_range_percentage + mid_range_percentage > 0.65) and light_range_percentage < 0.20)
 
     is_dark = is_dark_histogram if dark_range_percentage > 0.35 else is_dark_mean
 
