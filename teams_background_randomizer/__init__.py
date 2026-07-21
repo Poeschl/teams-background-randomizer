@@ -7,8 +7,8 @@ from config_helper import read_config
 from file_helper import get_new_background_path, copy_image_to_temp_dir, get_image_to_replace, \
   replace_image_with_new_link, get_ms_teams_thumbnail, \
   clean_team_upload_folder, get_overlay_image_path
-from image_helper import get_absolute_area_of_overlay, paint_overlay_on_background, \
-  scale_image_to_720p, should_use_dark_overlay
+from image_helper import get_absolute_area_of_overlay, get_overlay_destination_area, \
+  paint_overlay_on_background, scale_image_to_720p, should_use_dark_overlay
 
 
 def main(config_file: str):
@@ -27,8 +27,9 @@ def main(config_file: str):
     # Get regular overlay image to get dimensions
     overlay = get_overlay_image_path(config, True)
     overlay_area = get_absolute_area_of_overlay(config, new_background)
+    destination_area = get_overlay_destination_area(overlay_area)
 
-    if should_use_dark_overlay(new_background, overlay_area):
+    if should_use_dark_overlay(new_background, destination_area):
       overlay = get_overlay_image_path(config, False)
 
     new_background = paint_overlay_on_background(overlay_area, overlay, new_background)

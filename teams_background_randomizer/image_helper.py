@@ -39,8 +39,8 @@ def analyze_background_area(image: Path, area: tuple[float, float, float, float]
     # Make final determination with multiple factors
     is_dark_mean = mean_brightness < 128
 
-    # Consider dark only if truly dominated by dark/mid pixels AND not enough bright pixels present
-    is_dark_histogram = ((dark_range_percentage > 0.4 or dark_range_percentage + mid_range_percentage > 0.65) and light_range_percentage < 0.20)
+    # Consider dark if the majority of pixels are in the dark/mid range
+    is_dark_histogram = (dark_range_percentage + mid_range_percentage) > 0.65
 
     is_dark = is_dark_histogram if dark_range_percentage > 0.35 else is_dark_mean
 
@@ -91,6 +91,21 @@ def get_absolute_area_of_overlay(config: dict, background_image_path: Path) -> t
     bottom = (config['overlay']['offset']['y'] * img.height) + (config['overlay']['size']['height'] * img.height)
 
   return left, top, right, bottom
+
+
+def get_overlay_destination_area(area: tuple[float, float, float, float]) -> tuple[float, float, float, float]:
+  """
+  Compute the area of the background that the overlay is actually pasted onto.
+
+  `area` (as returned by get_absolute_area_of_overlay) only encodes the configured
+  offset/size and is used to derive the overlay's scaled dimensions. The overlay is
+  actually pasted anchored at its bottom-right corner (area[2], area[3]), so the real
+  destination box on the background differs from `area` itself. Analysis of the
+  background brightness must use this destination box, not `area`.
+  """
+  width = area[2] - area[0]
+  height = area[3] - area[1]
+  return area[2], area[3], area[2] + width, area[3] + height
 
 
 def paint_overlay_on_background(area: tuple[float, float, float, float], overlay_image_path: Path, background_image_path: Path) -> Path:
