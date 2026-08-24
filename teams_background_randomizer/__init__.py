@@ -5,8 +5,7 @@ from pathlib import Path
 
 from config_helper import read_config
 from file_helper import get_new_background_path, copy_image_to_temp_dir, get_image_to_replace, \
-  replace_image_with_new_link, get_ms_teams_thumbnail, \
-  clean_team_upload_folder, get_overlay_image_path
+  replace_image_with_new_link, get_ms_teams_thumbnail, get_overlay_image_path
 from image_helper import get_absolute_area_of_overlay, get_overlay_destination_area, \
   paint_overlay_on_background, scale_image_to_720p, should_use_dark_overlay
 
@@ -34,11 +33,8 @@ def main(config_file: str):
 
     new_background = paint_overlay_on_background(overlay_area, overlay, new_background)
 
-  # Clean the upload dir to get a valid image
+  # (re)create hard links for image and thumbnail, replacing only the previously linked image
   image_to_replace = get_image_to_replace(config)
-  clean_team_upload_folder(config, image_to_replace)
-
-  # (re)create hard links for image and thumbnail
   replace_image_with_new_link(image_to_replace, new_background)
   replace_image_with_new_link(get_ms_teams_thumbnail(image_to_replace), Path('teams_background_randomizer/random_background.png'))
 

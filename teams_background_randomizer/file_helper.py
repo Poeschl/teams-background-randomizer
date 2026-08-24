@@ -11,14 +11,6 @@ import yaml
 history_data_file = "background_history.yaml"
 
 
-def clean_team_upload_folder(config: dict, keep_file: Path):
-  upload_folder: Path = Path(config['msteams_upload_dir'])
-
-  for file in upload_folder.iterdir():
-    if file.name != keep_file.name and f"{file.stem}" != f"{keep_file.stem}_thumb":
-      file.unlink()
-
-
 def get_ms_teams_thumbnail(full_image: Path) -> Path:
   return Path(full_image.parent, f"{full_image.stem}_thumb{full_image.suffix}")
 

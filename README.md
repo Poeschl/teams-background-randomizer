@@ -2,7 +2,7 @@
 Select a random background image for Microsoft Teams.
 If you use the daily job, it will give you a new file every day to use as your background.
 
-> Warning: This script will remove all other uploaded background files.
+> Note: This script only replaces the previously linked background image; other uploaded background files are kept.
 
 ## Setup
 
